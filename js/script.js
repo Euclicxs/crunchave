@@ -186,9 +186,9 @@ document.addEventListener('DOMContentLoaded', function() {
         navMenu.classList.toggle('active');
     });
     
-    // Close mobile menu when clicking a link
+    // Close mobile menu when clicking a link + smooth scroll
     document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function(e) {
             hamburger.classList.remove('active');
             navMenu.classList.remove('active');
             
@@ -197,6 +197,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 item.classList.remove('active');
             });
             this.classList.add('active');
+
+            const targetId = this.getAttribute('href');
+            if (targetId && targetId.startsWith('#')) {
+                e.preventDefault();
+                const targetEl = document.querySelector(targetId);
+                if (targetEl) {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
         });
     });
     
@@ -417,8 +426,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Footer menu category links
-    document.querySelectorAll('.footer-links a').forEach(link => {
+    // Footer menu category links (only href="#")
+    document.querySelectorAll('.footer-links a[href="#"]').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const text = this.textContent.toLowerCase();
@@ -439,6 +448,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     activeLink.classList.add('active');
                     document.getElementById(category).classList.add('active');
                 }
+            }
+        });
+    });
+
+    // Footer quick links smooth scroll (anchors like #home, #products, etc.)
+    document.querySelectorAll('.footer-links a[href^="#"]:not([href="#"])').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetEl = document.querySelector(targetId);
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
