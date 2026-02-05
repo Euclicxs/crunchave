@@ -732,44 +732,60 @@ document.addEventListener('DOMContentLoaded', function() {
         customModal.className = 'modal';
         customModal.style.display = 'flex';
 
-        let customizationOptions = '';
+        const reqBeverages = itemName.includes('Wave Solo') ? 1 : itemName.includes('Crunch Duo') ? 2 : 4;
+        const reqDesserts = itemName.includes('Wave Solo') ? 0 : itemName.includes('Crunch Duo') ? 1 : 2;
 
-        if (itemName.includes('Wave Solo')) {
-            // Wave Solo - choose beverage
-            customizationOptions = `
-                <div class="customization-section">
-                    <h4>Choose Your Beverage</h4>
-                    <div class="beverage-options">
-                        <button class="beverage-option" data-beverage="Classic Cola Wave" data-price="59">🥤 Classic Cola Wave (+₱59)</button>
-                        <button class="beverage-option" data-beverage="Lemonade Splash" data-price="69">🍋 Lemonade Splash (+₱69)</button>
-                        <button class="beverage-option" data-beverage="Iced Tea Wave" data-price="59">🍵 Iced Tea Wave (+₱59)</button>
-                        <button class="beverage-option" data-beverage="Orange Crush" data-price="59">🍊 Orange Crush (+₱59)</button>
-                    </div>
-                </div>
-            `;
-        } else if (itemName.includes('Crunch Duo') || itemName.includes('Family Wave')) {
-            // Crunch Duo & Family Wave - choose beverage and sundae
-            customizationOptions = `
-                <div class="customization-section">
-                    <h4>Choose Your Beverage</h4>
-                    <div class="beverage-options">
-                        <button class="beverage-option" data-beverage="Classic Cola Wave" data-price="59">🥤 Classic Cola Wave (+₱59)</button>
-                        <button class="beverage-option" data-beverage="Lemonade Splash" data-price="69">🍋 Lemonade Splash (+₱69)</button>
-                        <button class="beverage-option" data-beverage="Iced Tea Wave" data-price="59">🍵 Iced Tea Wave (+₱59)</button>
-                        <button class="beverage-option" data-beverage="Orange Crush" data-price="59">🍊 Orange Crush (+₱59)</button>
-                    </div>
-                </div>
-                <div class="customization-section">
-                    <h4>Choose Your Dessert</h4>
-                    <div class="dessert-options">
-                        <button class="dessert-option" data-dessert="Crunchy Sundae Wave" data-price="99">🍦 Crunchy Sundae Wave (+₱99)</button>
-                        <button class="dessert-option" data-dessert="Chocolate Wave Cake" data-price="119">🍰 Chocolate Wave Cake (+₱119)</button>
-                        <button class="dessert-option" data-dessert="Apple Pie Crunch" data-price="89">🥧 Apple Pie Crunch (+₱89)</button>
-                        <button class="dessert-option" data-dessert="Cinnamon Crunch Donuts" data-price="79">🍩 Cinnamon Crunch Donuts (+₱79)</button>
-                    </div>
-                </div>
-            `;
-        }
+        const beverageCards = `
+            <button class="beverage-option" data-beverage="Classic Cola Wave" data-price="59">
+                <img src="assets/classic_cola_wave.jpg" alt="Classic Cola Wave">
+                <span>Classic Cola Wave</span>
+            </button>
+            <button class="beverage-option" data-beverage="Lemonade Splash" data-price="69">
+                <img src="assets/lemonade_splash.jpg" alt="Lemonade Splash">
+                <span>Lemonade Splash</span>
+            </button>
+            <button class="beverage-option" data-beverage="Iced Tea Wave" data-price="59">
+                <img src="assets/iced_tea_wave.jpg" alt="Iced Tea Wave">
+                <span>Iced Tea Wave</span>
+            </button>
+            <button class="beverage-option" data-beverage="Orange Crush" data-price="59">
+                <img src="assets/orange_crush.jpg" alt="Orange Crush">
+                <span>Orange Crush</span>
+            </button>
+        `;
+
+        const dessertCards = `
+            <button class="dessert-option" data-dessert="Crunchy Sundae Wave" data-price="99">
+                <img src="assets/crunchy_sundae_wave.jpg" alt="Crunchy Sundae Wave">
+                <span>Crunchy Sundae Wave</span>
+            </button>
+            <button class="dessert-option" data-dessert="Chocolate Wave Cake" data-price="119">
+                <img src="assets/chocolate_wave_cake.jpg" alt="Chocolate Wave Cake">
+                <span>Chocolate Wave Cake</span>
+            </button>
+            <button class="dessert-option" data-dessert="Apple Pie Crunch" data-price="89">
+                <img src="assets/apple_pie_crunch.jpg" alt="Apple Pie Crunch">
+                <span>Apple Pie Crunch</span>
+            </button>
+            <button class="dessert-option" data-dessert="Cinnamon Crunch Donuts" data-price="79">
+                <img src="assets/cinnamon_crunch_donuts.jpg" alt="Cinnamon Crunch Donuts">
+                <span>Cinnamon Crunch Donuts</span>
+            </button>
+        `;
+
+        const customizationOptions = `
+            <div class="customization-section">
+                <h4>Choose Your Beverage</h4>
+                <div class="selection-indicator">Tap to choose beverages • ${reqBeverages} required</div>
+                <div class="beverage-options">${beverageCards}</div>
+            </div>
+            ${reqDesserts > 0 ? `
+            <div class="customization-section">
+                <h4>Choose Your Dessert</h4>
+                <div class="selection-indicator">Tap to choose desserts • ${reqDesserts} required</div>
+                <div class="dessert-options">${dessertCards}</div>
+            </div>` : ``}
+        `;
 
         customModal.innerHTML = `
             <div class="modal-content custom-modal-content">
@@ -786,62 +802,59 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.body.appendChild(customModal);
 
-        let selectedBeverage = null;
-        let selectedDessert = null;
         let totalPrice = basePrice;
+        const addBtn = customModal.querySelector('.btn-add-custom');
+        addBtn.disabled = true;
 
-        // Handle beverage selection
-        customModal.querySelectorAll('.beverage-option').forEach(option => {
-            option.addEventListener('click', function() {
-                customModal.querySelectorAll('.beverage-option').forEach(opt => opt.classList.remove('selected'));
-                this.classList.add('selected');
-
-                selectedBeverage = {
-                    name: this.getAttribute('data-beverage'),
-                    price: parseFloat(this.getAttribute('data-price'))
-                };
-
-                updateCustomTotal();
-            });
-        });
-
-        // Handle dessert selection
-        customModal.querySelectorAll('.dessert-option').forEach(option => {
-            option.addEventListener('click', function() {
-                customModal.querySelectorAll('.dessert-option').forEach(opt => opt.classList.remove('selected'));
-                this.classList.add('selected');
-
-                selectedDessert = {
-                    name: this.getAttribute('data-dessert'),
-                    price: parseFloat(this.getAttribute('data-price'))
-                };
-
-                updateCustomTotal();
-            });
-        });
-
-        function updateCustomTotal() {
-            let currentTotal = basePrice;
-            if (selectedBeverage) currentTotal += selectedBeverage.price;
-            if (selectedDessert) currentTotal += selectedDessert.price;
-            totalPrice = currentTotal;
-            customModal.querySelector('#customTotal').textContent = `₱${totalPrice}`;
+        const bevMap = new Map();
+        const desMap = new Map();
+        function sumMap(m){ let s=0; for(const v of m.values()) s+=v; return s; }
+        function updateIndicators(){
+            const bevInd = customModal.querySelector('.customization-section .selection-indicator');
+            if(bevInd) bevInd.textContent = `Tap to choose beverages • ${reqBeverages} required • Selected ${sumMap(bevMap)}/${reqBeverages}`;
+            const desSection = customModal.querySelectorAll('.customization-section')[1];
+            if(desSection){
+                const desInd = desSection.querySelector('.selection-indicator');
+                desInd.textContent = `Tap to choose desserts • ${reqDesserts} required • Selected ${sumMap(desMap)}/${reqDesserts}`;
+            }
+            addBtn.disabled = !((sumMap(bevMap) === reqBeverages) && (reqDesserts === 0 || sumMap(desMap) === reqDesserts));
         }
-
-        // Add to cart button
-        customModal.querySelector('.btn-add-custom').addEventListener('click', function() {
-            let customizations = [];
-            if (selectedBeverage) customizations.push(selectedBeverage.name);
-            if (selectedDessert) customizations.push(selectedDessert.name);
-
-            const fullItemName = customizations.length > 0 ?
-                `${itemName} with ${customizations.join(' & ')}` :
-                itemName;
-
+        function toggleCount(type, name, element){
+            const map = type === 'bev' ? bevMap : desMap;
+            const req = type === 'bev' ? reqBeverages : reqDesserts;
+            const total = sumMap(map);
+            const current = map.get(name) || 0;
+            if (total < req) {
+                map.set(name, current + 1);
+                element.classList.add('selected');
+            } else if (current > 0) {
+                map.set(name, current - 1);
+                if (current - 1 === 0) element.classList.remove('selected');
+            }
+            customModal.querySelector('#customTotal').textContent = `₱${basePrice}`;
+            updateIndicators();
+        }
+        customModal.querySelectorAll('.beverage-option').forEach(option => {
+            option.addEventListener('click', function(){
+                toggleCount('bev', this.getAttribute('data-beverage'), this);
+            });
+        });
+        customModal.querySelectorAll('.dessert-option').forEach(option => {
+            option.addEventListener('click', function(){
+                toggleCount('des', this.getAttribute('data-dessert'), this);
+            });
+        });
+        updateIndicators();
+        addBtn.addEventListener('click', function() {
+            const bevList = [];
+            bevMap.forEach((count, name) => { for(let i=0;i<count;i++) bevList.push(name); });
+            const desList = [];
+            desMap.forEach((count, name) => { for(let i=0;i<count;i++) desList.push(name); });
+            const parts = bevList.concat(desList);
+            const fullItemName = parts.length > 0 ? `${itemName} with ${parts.join(' & ')}` : itemName;
             addToCart(fullItemName, totalPrice);
             showNotification(`Added ${fullItemName} to your cart!`);
             addCartAnimation(document.querySelector('.cart-icon'));
-
             customModal.remove();
         });
 
@@ -1025,7 +1038,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add cart animation styles
+        // Add cart animation styles
     const cartAnimationStyle = document.createElement('style');
     cartAnimationStyle.textContent = 
         `.cart-animation {
@@ -1115,4 +1128,5 @@ document.addEventListener('DOMContentLoaded', function() {
             background: #cbd5e1;
         } `;
     document.head.appendChild(cartAnimationStyle);
+        // No canvas generation; cards use static thumbnails
 });

@@ -935,7 +935,7 @@ body {
 .menu-modal-content::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
 }
-}
+
 
 .menu-tabs {
     display: flex;
@@ -1031,6 +1031,26 @@ body {
     height: 100%;
     object-fit: cover;
     border-radius: 10px;
+}
+
+.combo-thumbs {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    height: auto;
+    margin-bottom: 8px;
+}
+.combo-thumbs img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    border: 2px solid #fff;
+}
+.combo-feature {
+    height: 140px;
+    margin-bottom: 8px;
 }
 
 .menu-item-info h5 {
@@ -1883,8 +1903,53 @@ body {
     cursor: pointer;
     transition: var(--transition);
     display: flex;
-    justify-content: space-between;
+    gap: 12px;
+    justify-content: flex-start;
     align-items: center;
+}
+.beverage-option img,
+.dessert-option img {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.beverage-option span,
+.dessert-option span {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.selection-indicator {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+.qty-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: none;
+    background: var(--primary-gradient);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+.qty-value {
+    min-width: 18px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+.btn-add-custom[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .beverage-option:hover,
